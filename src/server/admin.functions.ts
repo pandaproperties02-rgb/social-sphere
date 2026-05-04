@@ -67,7 +67,7 @@ export const adminCreditWallet = createServerFn({ method: "POST" })
 
 export const adminSetRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ userId: z.string().uuid(), role: z.enum(["admin", "moderator", "user"]), enabled: z.boolean() }).parse(d))
+  .inputValidator((d) => z.object({ userId: z.string().uuid(), role: z.enum(["admin", "user"]), enabled: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
     if (data.enabled) {

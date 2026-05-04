@@ -23,6 +23,10 @@ import { Route as DashboardChildPanelRouteImport } from './routes/dashboard.chil
 import { Route as DashboardApiRouteImport } from './routes/dashboard.api'
 import { Route as DashboardAffiliatesRouteImport } from './routes/dashboard.affiliates'
 import { Route as DashboardAddFundsRouteImport } from './routes/dashboard.add-funds'
+import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
+import { Route as ApiPublicWebhooksMpesaRouteImport } from './routes/api/public/webhooks/mpesa'
+import { Route as ApiPublicV2ApiRouteImport } from './routes/api/public/v2/api'
+import { Route as ApiPublicHooksPollOrdersRouteImport } from './routes/api/public/hooks/poll-orders'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -94,6 +98,28 @@ const DashboardAddFundsRoute = DashboardAddFundsRouteImport.update({
   path: '/add-funds',
   getParentRoute: () => DashboardRoute,
 } as any)
+const ApiPublicWebhooksPaystackRoute =
+  ApiPublicWebhooksPaystackRouteImport.update({
+    id: '/api/public/webhooks/paystack',
+    path: '/api/public/webhooks/paystack',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksMpesaRoute = ApiPublicWebhooksMpesaRouteImport.update({
+  id: '/api/public/webhooks/mpesa',
+  path: '/api/public/webhooks/mpesa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV2ApiRoute = ApiPublicV2ApiRouteImport.update({
+  id: '/api/public/v2/api',
+  path: '/api/public/v2/api',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksPollOrdersRoute =
+  ApiPublicHooksPollOrdersRouteImport.update({
+    id: '/api/public/hooks/poll-orders',
+    path: '/api/public/hooks/poll-orders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +136,10 @@ export interface FileRoutesByFullPath {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/hooks/poll-orders': typeof ApiPublicHooksPollOrdersRoute
+  '/api/public/v2/api': typeof ApiPublicV2ApiRoute
+  '/api/public/webhooks/mpesa': typeof ApiPublicWebhooksMpesaRoute
+  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -125,6 +155,10 @@ export interface FileRoutesByTo {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/api/public/hooks/poll-orders': typeof ApiPublicHooksPollOrdersRoute
+  '/api/public/v2/api': typeof ApiPublicV2ApiRoute
+  '/api/public/webhooks/mpesa': typeof ApiPublicWebhooksMpesaRoute
+  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,6 +176,10 @@ export interface FileRoutesById {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/hooks/poll-orders': typeof ApiPublicHooksPollOrdersRoute
+  '/api/public/v2/api': typeof ApiPublicV2ApiRoute
+  '/api/public/webhooks/mpesa': typeof ApiPublicWebhooksMpesaRoute
+  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -160,6 +198,10 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/tickets'
     | '/dashboard/'
+    | '/api/public/hooks/poll-orders'
+    | '/api/public/v2/api'
+    | '/api/public/webhooks/mpesa'
+    | '/api/public/webhooks/paystack'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -175,6 +217,10 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/tickets'
     | '/dashboard'
+    | '/api/public/hooks/poll-orders'
+    | '/api/public/v2/api'
+    | '/api/public/webhooks/mpesa'
+    | '/api/public/webhooks/paystack'
   id:
     | '__root__'
     | '/'
@@ -191,6 +237,10 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/tickets'
     | '/dashboard/'
+    | '/api/public/hooks/poll-orders'
+    | '/api/public/v2/api'
+    | '/api/public/webhooks/mpesa'
+    | '/api/public/webhooks/paystack'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -198,6 +248,10 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  ApiPublicHooksPollOrdersRoute: typeof ApiPublicHooksPollOrdersRoute
+  ApiPublicV2ApiRoute: typeof ApiPublicV2ApiRoute
+  ApiPublicWebhooksMpesaRoute: typeof ApiPublicWebhooksMpesaRoute
+  ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -300,6 +354,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAddFundsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/api/public/webhooks/paystack': {
+      id: '/api/public/webhooks/paystack'
+      path: '/api/public/webhooks/paystack'
+      fullPath: '/api/public/webhooks/paystack'
+      preLoaderRoute: typeof ApiPublicWebhooksPaystackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/mpesa': {
+      id: '/api/public/webhooks/mpesa'
+      path: '/api/public/webhooks/mpesa'
+      fullPath: '/api/public/webhooks/mpesa'
+      preLoaderRoute: typeof ApiPublicWebhooksMpesaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v2/api': {
+      id: '/api/public/v2/api'
+      path: '/api/public/v2/api'
+      fullPath: '/api/public/v2/api'
+      preLoaderRoute: typeof ApiPublicV2ApiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/poll-orders': {
+      id: '/api/public/hooks/poll-orders'
+      path: '/api/public/hooks/poll-orders'
+      fullPath: '/api/public/hooks/poll-orders'
+      preLoaderRoute: typeof ApiPublicHooksPollOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -338,6 +420,10 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  ApiPublicHooksPollOrdersRoute: ApiPublicHooksPollOrdersRoute,
+  ApiPublicV2ApiRoute: ApiPublicV2ApiRoute,
+  ApiPublicWebhooksMpesaRoute: ApiPublicWebhooksMpesaRoute,
+  ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
