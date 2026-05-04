@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          last_used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          last_used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          last_used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      app_settings: {
+        Row: {
+          currency: string
+          default_markup_percent: number
+          id: number
+          mpesa_shortcode: string | null
+          paystack_public_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          currency?: string
+          default_markup_percent?: number
+          id?: number
+          mpesa_shortcode?: string | null
+          paystack_public_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          currency?: string
+          default_markup_percent?: number
+          id?: number
+          mpesa_shortcode?: string | null
+          paystack_public_key?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -38,7 +89,9 @@ export type Database = {
       orders: {
         Row: {
           charge: number
+          cost: number
           created_at: string
+          error: string | null
           id: number
           link: string
           provider_order_id: string | null
@@ -52,7 +105,9 @@ export type Database = {
         }
         Insert: {
           charge: number
+          cost?: number
           created_at?: string
+          error?: string | null
           id?: number
           link: string
           provider_order_id?: string | null
@@ -66,7 +121,9 @@ export type Database = {
         }
         Update: {
           charge?: number
+          cost?: number
           created_at?: string
+          error?: string | null
           id?: number
           link?: string
           provider_order_id?: string | null
@@ -87,6 +144,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_intents: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          meta: Json
+          provider: string
+          provider_ref: string | null
+          reference: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          meta?: Json
+          provider: string
+          provider_ref?: string | null
+          reference: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          meta?: Json
+          provider?: string
+          provider_ref?: string | null
+          reference?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -109,40 +208,82 @@ export type Database = {
         }
         Relationships: []
       }
+      providers: {
+        Row: {
+          api_key: string
+          api_url: string
+          balance: number
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          api_key: string
+          api_url: string
+          balance?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          api_key?: string
+          api_url?: string
+          balance?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           avg_time: string | null
           category_id: string
+          cost_rate: number
           created_at: string
           description: string | null
           id: number
           max_order: number
           min_order: number
           name: string
+          provider_id: string | null
+          provider_service_id: string | null
           rate: number
           status: string
         }
         Insert: {
           avg_time?: string | null
           category_id: string
+          cost_rate?: number
           created_at?: string
           description?: string | null
           id?: number
           max_order?: number
           min_order?: number
           name: string
+          provider_id?: string | null
+          provider_service_id?: string | null
           rate: number
           status?: string
         }
         Update: {
           avg_time?: string | null
           category_id?: string
+          cost_rate?: number
           created_at?: string
           description?: string | null
           id?: number
           max_order?: number
           min_order?: number
           name?: string
+          provider_id?: string | null
+          provider_service_id?: string | null
           rate?: number
           status?: string
         }
@@ -154,7 +295,76 @@ export type Database = {
             referencedRelation: "categories"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "services_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      ticket_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: number
+          is_admin: boolean
+          ticket_id: number
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: number
+          is_admin?: boolean
+          ticket_id: number
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: number
+          is_admin?: boolean
+          ticket_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tickets: {
+        Row: {
+          created_at: string
+          id: number
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -231,6 +441,14 @@ export type Database = {
     }
     Functions: {
       add_funds: { Args: { _amount: number }; Returns: number }
+      admin_credit_wallet: {
+        Args: { _amount: number; _reference: string; _user_id: string }
+        Returns: number
+      }
+      complete_payment_intent: {
+        Args: { _intent_id: string; _provider_ref: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -242,6 +460,16 @@ export type Database = {
         Args: { _link: string; _quantity: number; _service_id: number }
         Returns: number
       }
+      place_order_for: {
+        Args: {
+          _link: string
+          _quantity: number
+          _service_id: number
+          _user_id: string
+        }
+        Returns: number
+      }
+      set_markup: { Args: { _percent: number }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "user"

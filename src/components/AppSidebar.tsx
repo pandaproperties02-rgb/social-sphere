@@ -1,5 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ShoppingCart, LayoutGrid, ListOrdered, Wallet, Code2, Users, GitBranch, LifeBuoy, Layers } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ShoppingCart, LayoutGrid, ListOrdered, Wallet, Code2, Users, GitBranch, LifeBuoy, Layers, Shield } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 
 const items = [
   { to: "/dashboard/new-order", label: "New Order", icon: ShoppingCart },
@@ -15,6 +18,13 @@ const items = [
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle().then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
+  const allItems = isAdmin ? [...items, { to: "/dashboard/admin", label: "Admin", icon: Shield }] : items;
   return (
     <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-border bg-sidebar">
       <div className="px-5 py-5 border-b border-border">
@@ -27,8 +37,8 @@ export function AppSidebar() {
         </div>
       </div>
       <nav className="flex-1 p-3 space-y-1">
-        {items.map((it) => {
-          const active = pathname === it.to;
+        {allItems.map((it) => {
+          const active = pathname === it.to || (it.to === "/dashboard/admin" && pathname.startsWith("/dashboard/admin"));
           const Icon = it.icon;
           return (
             <Link
