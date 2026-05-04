@@ -22,7 +22,14 @@ import { Route as DashboardMassOrderRouteImport } from './routes/dashboard.mass-
 import { Route as DashboardChildPanelRouteImport } from './routes/dashboard.child-panel'
 import { Route as DashboardApiRouteImport } from './routes/dashboard.api'
 import { Route as DashboardAffiliatesRouteImport } from './routes/dashboard.affiliates'
+import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as DashboardAddFundsRouteImport } from './routes/dashboard.add-funds'
+import { Route as DashboardAdminIndexRouteImport } from './routes/dashboard.admin.index'
+import { Route as DashboardAdminUsersRouteImport } from './routes/dashboard.admin.users'
+import { Route as DashboardAdminSettingsRouteImport } from './routes/dashboard.admin.settings'
+import { Route as DashboardAdminServicesRouteImport } from './routes/dashboard.admin.services'
+import { Route as DashboardAdminProvidersRouteImport } from './routes/dashboard.admin.providers'
+import { Route as DashboardAdminOrdersRouteImport } from './routes/dashboard.admin.orders'
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
 import { Route as ApiPublicWebhooksMpesaRouteImport } from './routes/api/public/webhooks/mpesa'
 import { Route as ApiPublicV2ApiRouteImport } from './routes/api/public/v2/api'
@@ -93,10 +100,45 @@ const DashboardAffiliatesRoute = DashboardAffiliatesRouteImport.update({
   path: '/affiliates',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAdminRoute = DashboardAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAddFundsRoute = DashboardAddFundsRouteImport.update({
   id: '/add-funds',
   path: '/add-funds',
   getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAdminIndexRoute = DashboardAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardAdminUsersRoute = DashboardAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardAdminSettingsRoute = DashboardAdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardAdminServicesRoute = DashboardAdminServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardAdminProvidersRoute = DashboardAdminProvidersRouteImport.update({
+  id: '/providers',
+  path: '/providers',
+  getParentRoute: () => DashboardAdminRoute,
+} as any)
+const DashboardAdminOrdersRoute = DashboardAdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => DashboardAdminRoute,
 } as any)
 const ApiPublicWebhooksPaystackRoute =
   ApiPublicWebhooksPaystackRouteImport.update({
@@ -127,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/dashboard/add-funds': typeof DashboardAddFundsRoute
+  '/dashboard/admin': typeof DashboardAdminRouteWithChildren
   '/dashboard/affiliates': typeof DashboardAffiliatesRoute
   '/dashboard/api': typeof DashboardApiRoute
   '/dashboard/child-panel': typeof DashboardChildPanelRoute
@@ -136,6 +179,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
+  '/dashboard/admin/providers': typeof DashboardAdminProvidersRoute
+  '/dashboard/admin/services': typeof DashboardAdminServicesRoute
+  '/dashboard/admin/settings': typeof DashboardAdminSettingsRoute
+  '/dashboard/admin/users': typeof DashboardAdminUsersRoute
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/api/public/hooks/poll-orders': typeof ApiPublicHooksPollOrdersRoute
   '/api/public/v2/api': typeof ApiPublicV2ApiRoute
   '/api/public/webhooks/mpesa': typeof ApiPublicWebhooksMpesaRoute
@@ -155,6 +204,12 @@ export interface FileRoutesByTo {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
+  '/dashboard/admin/providers': typeof DashboardAdminProvidersRoute
+  '/dashboard/admin/services': typeof DashboardAdminServicesRoute
+  '/dashboard/admin/settings': typeof DashboardAdminSettingsRoute
+  '/dashboard/admin/users': typeof DashboardAdminUsersRoute
+  '/dashboard/admin': typeof DashboardAdminIndexRoute
   '/api/public/hooks/poll-orders': typeof ApiPublicHooksPollOrdersRoute
   '/api/public/v2/api': typeof ApiPublicV2ApiRoute
   '/api/public/webhooks/mpesa': typeof ApiPublicWebhooksMpesaRoute
@@ -167,6 +222,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/dashboard/add-funds': typeof DashboardAddFundsRoute
+  '/dashboard/admin': typeof DashboardAdminRouteWithChildren
   '/dashboard/affiliates': typeof DashboardAffiliatesRoute
   '/dashboard/api': typeof DashboardApiRoute
   '/dashboard/child-panel': typeof DashboardChildPanelRoute
@@ -176,6 +232,12 @@ export interface FileRoutesById {
   '/dashboard/services': typeof DashboardServicesRoute
   '/dashboard/tickets': typeof DashboardTicketsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
+  '/dashboard/admin/providers': typeof DashboardAdminProvidersRoute
+  '/dashboard/admin/services': typeof DashboardAdminServicesRoute
+  '/dashboard/admin/settings': typeof DashboardAdminSettingsRoute
+  '/dashboard/admin/users': typeof DashboardAdminUsersRoute
+  '/dashboard/admin/': typeof DashboardAdminIndexRoute
   '/api/public/hooks/poll-orders': typeof ApiPublicHooksPollOrdersRoute
   '/api/public/v2/api': typeof ApiPublicV2ApiRoute
   '/api/public/webhooks/mpesa': typeof ApiPublicWebhooksMpesaRoute
@@ -189,6 +251,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/dashboard/add-funds'
+    | '/dashboard/admin'
     | '/dashboard/affiliates'
     | '/dashboard/api'
     | '/dashboard/child-panel'
@@ -198,6 +261,12 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/tickets'
     | '/dashboard/'
+    | '/dashboard/admin/orders'
+    | '/dashboard/admin/providers'
+    | '/dashboard/admin/services'
+    | '/dashboard/admin/settings'
+    | '/dashboard/admin/users'
+    | '/dashboard/admin/'
     | '/api/public/hooks/poll-orders'
     | '/api/public/v2/api'
     | '/api/public/webhooks/mpesa'
@@ -217,6 +286,12 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/tickets'
     | '/dashboard'
+    | '/dashboard/admin/orders'
+    | '/dashboard/admin/providers'
+    | '/dashboard/admin/services'
+    | '/dashboard/admin/settings'
+    | '/dashboard/admin/users'
+    | '/dashboard/admin'
     | '/api/public/hooks/poll-orders'
     | '/api/public/v2/api'
     | '/api/public/webhooks/mpesa'
@@ -228,6 +303,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/dashboard/add-funds'
+    | '/dashboard/admin'
     | '/dashboard/affiliates'
     | '/dashboard/api'
     | '/dashboard/child-panel'
@@ -237,6 +313,12 @@ export interface FileRouteTypes {
     | '/dashboard/services'
     | '/dashboard/tickets'
     | '/dashboard/'
+    | '/dashboard/admin/orders'
+    | '/dashboard/admin/providers'
+    | '/dashboard/admin/services'
+    | '/dashboard/admin/settings'
+    | '/dashboard/admin/users'
+    | '/dashboard/admin/'
     | '/api/public/hooks/poll-orders'
     | '/api/public/v2/api'
     | '/api/public/webhooks/mpesa'
@@ -347,12 +429,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAffiliatesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/admin': {
+      id: '/dashboard/admin'
+      path: '/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof DashboardAdminRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/add-funds': {
       id: '/dashboard/add-funds'
       path: '/add-funds'
       fullPath: '/dashboard/add-funds'
       preLoaderRoute: typeof DashboardAddFundsRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/admin/': {
+      id: '/dashboard/admin/'
+      path: '/'
+      fullPath: '/dashboard/admin/'
+      preLoaderRoute: typeof DashboardAdminIndexRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/users': {
+      id: '/dashboard/admin/users'
+      path: '/users'
+      fullPath: '/dashboard/admin/users'
+      preLoaderRoute: typeof DashboardAdminUsersRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/settings': {
+      id: '/dashboard/admin/settings'
+      path: '/settings'
+      fullPath: '/dashboard/admin/settings'
+      preLoaderRoute: typeof DashboardAdminSettingsRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/services': {
+      id: '/dashboard/admin/services'
+      path: '/services'
+      fullPath: '/dashboard/admin/services'
+      preLoaderRoute: typeof DashboardAdminServicesRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/providers': {
+      id: '/dashboard/admin/providers'
+      path: '/providers'
+      fullPath: '/dashboard/admin/providers'
+      preLoaderRoute: typeof DashboardAdminProvidersRouteImport
+      parentRoute: typeof DashboardAdminRoute
+    }
+    '/dashboard/admin/orders': {
+      id: '/dashboard/admin/orders'
+      path: '/orders'
+      fullPath: '/dashboard/admin/orders'
+      preLoaderRoute: typeof DashboardAdminOrdersRouteImport
+      parentRoute: typeof DashboardAdminRoute
     }
     '/api/public/webhooks/paystack': {
       id: '/api/public/webhooks/paystack'
@@ -385,8 +516,31 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardAdminRouteChildren {
+  DashboardAdminOrdersRoute: typeof DashboardAdminOrdersRoute
+  DashboardAdminProvidersRoute: typeof DashboardAdminProvidersRoute
+  DashboardAdminServicesRoute: typeof DashboardAdminServicesRoute
+  DashboardAdminSettingsRoute: typeof DashboardAdminSettingsRoute
+  DashboardAdminUsersRoute: typeof DashboardAdminUsersRoute
+  DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
+}
+
+const DashboardAdminRouteChildren: DashboardAdminRouteChildren = {
+  DashboardAdminOrdersRoute: DashboardAdminOrdersRoute,
+  DashboardAdminProvidersRoute: DashboardAdminProvidersRoute,
+  DashboardAdminServicesRoute: DashboardAdminServicesRoute,
+  DashboardAdminSettingsRoute: DashboardAdminSettingsRoute,
+  DashboardAdminUsersRoute: DashboardAdminUsersRoute,
+  DashboardAdminIndexRoute: DashboardAdminIndexRoute,
+}
+
+const DashboardAdminRouteWithChildren = DashboardAdminRoute._addFileChildren(
+  DashboardAdminRouteChildren,
+)
+
 interface DashboardRouteChildren {
   DashboardAddFundsRoute: typeof DashboardAddFundsRoute
+  DashboardAdminRoute: typeof DashboardAdminRouteWithChildren
   DashboardAffiliatesRoute: typeof DashboardAffiliatesRoute
   DashboardApiRoute: typeof DashboardApiRoute
   DashboardChildPanelRoute: typeof DashboardChildPanelRoute
@@ -400,6 +554,7 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAddFundsRoute: DashboardAddFundsRoute,
+  DashboardAdminRoute: DashboardAdminRouteWithChildren,
   DashboardAffiliatesRoute: DashboardAffiliatesRoute,
   DashboardApiRoute: DashboardApiRoute,
   DashboardChildPanelRoute: DashboardChildPanelRoute,
