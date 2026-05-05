@@ -38,7 +38,6 @@ ON CONFLICT DO NOTHING;`}
   const tabs = [
     { to: "/dashboard/admin", label: "Overview" },
     { to: "/dashboard/admin/users", label: "Users" },
-    { to: "/dashboard/admin/services", label: "Services" },
     { to: "/dashboard/admin/orders", label: "Orders" },
     { to: "/dashboard/admin/production", label: "Production" },
     { to: "/dashboard/admin/settings", label: "Settings" },

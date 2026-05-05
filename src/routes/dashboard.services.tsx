@@ -56,7 +56,7 @@ function ServicesPage() {
         setServices(svcRows);
         setOpen(Object.fromEntries(catRows.map((x) => [x.id, true])));
         setError(null);
-      } catch (err) {
+      } catch (err: any) {
         setError(String(err?.message ?? err));
       } finally {
         setLoading(false);
