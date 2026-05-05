@@ -1,7 +1,26 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-// import { IgApiClient } from 'instagram-private-api'; // For Instagram automation
-// import TikTokScraper from 'tiktok-scraper'; // For TikTok scraping (may need different lib for posting)
-// import { FacebookAdsApi } from 'facebook-nodejs-business-sdk'; // For Facebook business API
+import { extractVideoId, getVideoMetrics } from "./tiktok.server";
+
+// Try to capture a real "start_count" baseline from TikTok before delivery.
+// Returns null when the link isn't TikTok or the API isn't configured.
+async function tiktokBaseline(link: string, serviceName: string): Promise<number | null> {
+  if (!/tiktok\.com/i.test(link)) return null;
+  const id = extractVideoId(link);
+  if (!id) return null;
+  try {
+    const m = await getVideoMetrics(id);
+    if (!m) return null;
+    const n = serviceName.toLowerCase();
+    if (n.includes("like")) return m.likes;
+    if (n.includes("view")) return m.views;
+    if (n.includes("comment")) return m.comments;
+    if (n.includes("share")) return m.shares;
+    return m.views;
+  } catch (e) {
+    console.warn("[tiktok baseline]", (e as Error).message);
+    return null;
+  }
+}
 
 // TODO: Initialize API clients with credentials
 // const ig = new IgApiClient();
@@ -88,12 +107,16 @@ export async function executeOrder(orderId: number): Promise<boolean> {
     // Execute the order
     await handler(order);
 
+    // For TikTok orders, capture a verified start_count via the public TikTok API.
+    const baseline = await tiktokBaseline(order.link, serviceName);
+
     // Mark order as completed
     const { error: updateError } = await supabaseAdmin
       .from("orders")
       .update({
         status: "completed",
         remains: 0,
+        ...(baseline !== null ? { start_count: baseline } : {}),
         updated_at: new Date().toISOString()
       })
       .eq("id", orderId);
