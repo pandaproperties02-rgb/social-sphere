@@ -5,7 +5,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 type Category = { id: string; name: string };
-type Service = { id: number; category_id: string; name: string; rate: number; min_order: number; max_order: number; description: string | null };
+type Service = {
+  id: number;
+  category_id: string;
+  name: string;
+  rate: number;
+  min_order: number;
+  max_order: number;
+  description: string | null;
+  provider_id: string | null;
+  providers: { name: string } | null;
+};
 
 const searchSchema = z.object({ service: z.coerce.number().optional() });
 
@@ -24,12 +34,26 @@ function NewOrderPage() {
   const [link, setLink] = useState("");
   const [qty, setQty] = useState<number | "">("");
   const [submitting, setSubmitting] = useState(false);
+  const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null);
+  const [trialActive, setTrialActive] = useState(false);
 
   useEffect(() => {
     (async () => {
+      const { data } = await supabase.from("profiles").select("trial_ends_at").single();
+      if (data?.trial_ends_at) {
+        setTrialEndsAt(data.trial_ends_at);
+        setTrialActive(new Date(data.trial_ends_at) > new Date());
+      }
+    })();
+
+    (async () => {
       const [c, s] = await Promise.all([
         supabase.from("categories").select("id,name").order("sort_order"),
-        supabase.from("services").select("id,category_id,name,rate,min_order,max_order,description").order("id").limit(5000),
+        supabase.from("services")
+          .select("id,category_id,name,rate,min_order,max_order,description,provider_id,providers(name)")
+          .eq("status", "active")
+          .order("id")
+          .limit(5000),
       ]);
       const catRows = (c.data ?? []) as Category[];
       const svcRows = (s.data ?? []) as Service[];
@@ -55,7 +79,7 @@ function NewOrderPage() {
     () => services.find((s) => s.id === serviceId),
     [services, serviceId]
   );
-  const charge = selected && qty ? (selected.rate * Number(qty)) / 1000 : 0;
+  const charge = selected && qty ? (trialActive ? 0 : (selected.rate * Number(qty)) / 1000) : 0;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +101,11 @@ function NewOrderPage() {
       <div>
         <h1 className="text-2xl font-semibold">New order</h1>
         <p className="text-sm text-muted-foreground">Pick a service, paste your link and place an order.</p>
+        {trialActive && trialEndsAt ? (
+          <div className="mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+            Free trial active until {new Date(trialEndsAt).toLocaleString()}. Orders are free during this period.
+          </div>
+        ) : null}
       </div>
 
       <form onSubmit={submit} className="rounded-2xl border border-border bg-card p-6 space-y-4">
@@ -99,9 +128,12 @@ function NewOrderPage() {
 
         {selected && (
           <div className="rounded-lg border border-border bg-background/40 p-3 text-xs text-muted-foreground">
-            Min: <span className="text-foreground font-mono">{selected.min_order}</span> · Max:{" "}
-            <span className="text-foreground font-mono">{selected.max_order.toLocaleString()}</span>
-            {selected.description ? <div className="mt-1">{selected.description}</div> : null}
+            <div>
+              Provider: <span className="text-foreground font-mono">{selected.providers?.name ?? "Live production"}</span>
+            </div>
+            <div className="mt-2">
+              Min: <span className="text-foreground font-mono">{selected.min_order}</span> · Max: <span className="text-foreground font-mono">{selected.max_order.toLocaleString()}</span>
+            </div>
           </div>
         )}
 

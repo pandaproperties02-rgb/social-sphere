@@ -12,14 +12,24 @@ function generateKey() {
 export const getMyApiKey = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data } = await supabaseAdmin.from("api_keys").select("key,created_at,last_used_at").eq("user_id", context.userId).maybeSingle();
-    return data;
+    try {
+      const { data } = await supabaseAdmin.from("api_keys").select("key,created_at,last_used_at").eq("user_id", context.userId).maybeSingle();
+      return data;
+    } catch (error) {
+      console.error("Error fetching API key:", error);
+      return null;
+    }
   });
 
 export const rotateMyApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const key = generateKey();
-    await supabaseAdmin.from("api_keys").upsert({ user_id: context.userId, key, created_at: new Date().toISOString(), last_used_at: null }, { onConflict: "user_id" });
-    return { key };
+    try {
+      const key = generateKey();
+      await supabaseAdmin.from("api_keys").upsert({ user_id: context.userId, key, created_at: new Date().toISOString(), last_used_at: null }, { onConflict: "user_id" });
+      return { key };
+    } catch (error) {
+      console.error("Error rotating API key:", error);
+      throw new Error("Failed to rotate API key");
+    }
   });

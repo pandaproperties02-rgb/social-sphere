@@ -59,8 +59,9 @@ export const Route = createFileRoute("/api/public/v2/api")({
           if (action === "services") {
             const { data } = await supabaseAdmin
               .from("services")
-              .select("id,name,rate,min_order,max_order,category_id,categories:categories(name)")
+              .select("id,name,rate,min_order,max_order,category_id,categories:categories(name),provider_id")
               .eq("status", "active")
+              .not("provider_id", "is", null)
               .limit(5000);
             const out = (data ?? []).map((s: any) => ({
               service: s.id,

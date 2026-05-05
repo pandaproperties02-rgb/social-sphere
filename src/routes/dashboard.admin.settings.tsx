@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { adminGetSettings, adminSetMarkup } from "@/server/admin.functions";
+import { adminGetSettings, adminSetMarkup } from "@/rpc/admin";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/admin/settings")({ component: AdminSettings });

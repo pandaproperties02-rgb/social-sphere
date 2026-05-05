@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { getMyApiKey, rotateMyApiKey } from "@/server/api-keys.functions";
+import { getMyApiKey, rotateMyApiKey } from "@/rpc/api-keys";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/api")({ component: ApiPage });
@@ -13,7 +13,9 @@ function ApiPage() {
   const [loading, setLoading] = useState(true);
   const endpoint = typeof window !== "undefined" ? `${window.location.origin}/api/public/v2/api` : "/api/public/v2/api";
 
-  useEffect(() => { get().then((d: any) => { setKey(d?.key ?? null); setLoading(false); }); }, []);
+  useEffect(() => { 
+    get().then((d: any) => { setKey(d?.key ?? null); setLoading(false); }).catch(() => setLoading(false)); 
+  }, []);
 
   const onRotate = async () => {
     try { const r = await rotate(); setKey(r.key); toast.success("New key generated"); }

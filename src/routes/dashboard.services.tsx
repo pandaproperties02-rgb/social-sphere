@@ -13,6 +13,8 @@ type Service = {
   max_order: number;
   avg_time: string | null;
   description: string | null;
+  provider_id: string | null;
+  providers: { name: string } | null;
 };
 
 export const Route = createFileRoute("/dashboard/services")({ component: ServicesPage });
@@ -23,6 +25,7 @@ function ServicesPage() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<Record<string, boolean>>({});
+  const [error, setError] = useState<string | null>(null);
   const [favs, setFavs] = useState<Set<number>>(() => {
     if (typeof window === "undefined") return new Set();
     try { return new Set(JSON.parse(localStorage.getItem("sw_favs") || "[]")); } catch { return new Set(); }
@@ -31,16 +34,33 @@ function ServicesPage() {
   useEffect(() => {
     let active = true;
     (async () => {
-      const [c, s] = await Promise.all([
-        supabase.from("categories").select("id,name").order("sort_order"),
-        supabase.from("services").select("id,category_id,name,rate,min_order,max_order,avg_time,description").order("id").limit(5000),
-      ]);
-      if (!active) return;
-      const catRows = (c.data ?? []) as Category[];
-      setCats(catRows);
-      setServices((s.data ?? []) as Service[]);
-      setOpen(Object.fromEntries(catRows.map((x) => [x.id, true])));
-      setLoading(false);
+      try {
+        const [c, s] = await Promise.all([
+          supabase.from("categories").select("id,name").order("sort_order"),
+          supabase.from("services")
+            .select("id,category_id,name,rate,min_order,max_order,avg_time,description,provider_id,providers(name)")
+            .eq("status", "active")
+            .not("provider_id", "is", null)
+            .order("id")
+            .limit(5000),
+        ]);
+        if (!active) return;
+        
+        if (c.error) throw c.error;
+        if (s.error) throw s.error;
+        
+        const catRows = (c.data ?? []) as Category[];
+        const svcRows = (s.data ?? []) as Service[];
+        
+        setCats(catRows);
+        setServices(svcRows);
+        setOpen(Object.fromEntries(catRows.map((x) => [x.id, true])));
+        setError(null);
+      } catch (err) {
+        setError(String(err?.message ?? err));
+      } finally {
+        setLoading(false);
+      }
     })();
     return () => { active = false; };
   }, []);
@@ -81,6 +101,12 @@ function ServicesPage() {
         </div>
       </div>
 
+      {error && (
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+          Error loading services: {error}
+        </div>
+      )}
+
       <div className="flex items-center gap-2">
         <div className="relative flex-1 max-w-xl">
           <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -95,12 +121,17 @@ function ServicesPage() {
 
       {loading ? (
         <div className="text-sm text-muted-foreground">Loading services…</div>
+      ) : services.length === 0 ? (
+        <div className="rounded-lg border border-border bg-card p-6 text-center text-sm text-muted-foreground">
+          No live services available yet. Please check back soon.
+        </div>
       ) : (
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
-          <div className="hidden md:grid grid-cols-[40px_70px_1fr_110px_90px_110px_140px_90px] gap-3 px-4 py-3 border-b border-border text-[11px] uppercase tracking-wider text-muted-foreground bg-background/40">
+          <div className="hidden md:grid grid-cols-[40px_70px_1.2fr_120px_90px_110px_140px_120px_90px] gap-3 px-4 py-3 border-b border-border text-[11px] uppercase tracking-wider text-muted-foreground bg-background/40">
             <div></div>
             <div>ID</div>
             <div>Service</div>
+            <div>Provider</div>
             <div>Rate /1000</div>
             <div>Min</div>
             <div>Max</div>
@@ -125,12 +156,13 @@ function ServicesPage() {
                   <span className="text-xs text-muted-foreground">{rows.length} services</span>
                 </button>
                 {isOpen && rows.map((s) => (
-                  <div key={s.id} className="grid grid-cols-[40px_70px_1fr_110px_90px_110px_140px_90px] gap-3 px-4 py-3 items-center border-t border-border/50 hover:bg-background/30 text-sm">
+                  <div key={s.id} className="grid grid-cols-[40px_70px_1.2fr_120px_90px_110px_140px_120px_90px] gap-3 px-4 py-3 items-center border-t border-border/50 hover:bg-background/30 text-sm">
                     <button onClick={() => toggleFav(s.id)} aria-label="Favorite">
                       <Star className={`h-4 w-4 ${favs.has(s.id) ? "fill-primary text-primary" : "text-muted-foreground"}`} />
                     </button>
                     <div className="font-mono text-xs text-muted-foreground">{s.id}</div>
                     <div className="truncate" title={s.name}>{s.name}</div>
+                    <div className="truncate text-xs text-muted-foreground" title={s.providers?.name ?? "Live production"}>{s.providers?.name ?? "Live production"}</div>
                     <div className="font-mono">${Number(s.rate).toFixed(4)}</div>
                     <div className="font-mono text-muted-foreground">{s.min_order}</div>
                     <div className="font-mono text-muted-foreground">{s.max_order.toLocaleString()}</div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
-import { initPaystackCheckout, initMpesaSTKPush } from "@/server/payments.functions";
+import { initPaystackCheckout, initMpesaSTKPush } from "@/rpc/payments";
 import { useAuth } from "@/lib/auth";
 
 type Tx = { id: string; amount: number; type: string; reference: string | null; created_at: string };

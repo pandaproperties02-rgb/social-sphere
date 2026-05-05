@@ -39,8 +39,8 @@ ON CONFLICT DO NOTHING;`}
     { to: "/dashboard/admin", label: "Overview" },
     { to: "/dashboard/admin/users", label: "Users" },
     { to: "/dashboard/admin/services", label: "Services" },
-    { to: "/dashboard/admin/providers", label: "Providers" },
     { to: "/dashboard/admin/orders", label: "Orders" },
+    { to: "/dashboard/admin/production", label: "Production" },
     { to: "/dashboard/admin/settings", label: "Settings" },
   ];
 
