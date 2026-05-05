@@ -43,7 +43,7 @@ function OrdersPage() {
       if (err) throw err;
       setOrders((data ?? []) as Order[]);
       setError(null);
-    } catch (err) {
+    } catch (err: any) {
       setError(String(err?.message ?? err));
     } finally {
       setLoading(false);
@@ -70,7 +70,7 @@ function OrdersPage() {
       if (err) throw err;
       toast.success(`Order #${orderId} completed`);
       await refreshOrders();
-    } catch (err) {
+    } catch (err: any) {
       toast.error(String(err?.message ?? err));
     } finally {
       setCompleting(null);
