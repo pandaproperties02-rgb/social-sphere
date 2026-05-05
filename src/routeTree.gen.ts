@@ -27,7 +27,6 @@ import { Route as DashboardAddFundsRouteImport } from './routes/dashboard.add-fu
 import { Route as DashboardAdminIndexRouteImport } from './routes/dashboard.admin.index'
 import { Route as DashboardAdminUsersRouteImport } from './routes/dashboard.admin.users'
 import { Route as DashboardAdminSettingsRouteImport } from './routes/dashboard.admin.settings'
-import { Route as DashboardAdminServicesRouteImport } from './routes/dashboard.admin.services'
 import { Route as DashboardAdminProductionRouteImport } from './routes/dashboard.admin.production'
 import { Route as DashboardAdminOrdersRouteImport } from './routes/dashboard.admin.orders'
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
@@ -125,11 +124,6 @@ const DashboardAdminSettingsRoute = DashboardAdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardAdminRoute,
 } as any)
-const DashboardAdminServicesRoute = DashboardAdminServicesRouteImport.update({
-  id: '/services',
-  path: '/services',
-  getParentRoute: () => DashboardAdminRoute,
-} as any)
 const DashboardAdminProductionRoute =
   DashboardAdminProductionRouteImport.update({
     id: '/production',
@@ -182,7 +176,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
   '/dashboard/admin/production': typeof DashboardAdminProductionRoute
-  '/dashboard/admin/services': typeof DashboardAdminServicesRoute
   '/dashboard/admin/settings': typeof DashboardAdminSettingsRoute
   '/dashboard/admin/users': typeof DashboardAdminUsersRoute
   '/dashboard/admin/': typeof DashboardAdminIndexRoute
@@ -207,7 +200,6 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
   '/dashboard/admin/production': typeof DashboardAdminProductionRoute
-  '/dashboard/admin/services': typeof DashboardAdminServicesRoute
   '/dashboard/admin/settings': typeof DashboardAdminSettingsRoute
   '/dashboard/admin/users': typeof DashboardAdminUsersRoute
   '/dashboard/admin': typeof DashboardAdminIndexRoute
@@ -235,7 +227,6 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/admin/orders': typeof DashboardAdminOrdersRoute
   '/dashboard/admin/production': typeof DashboardAdminProductionRoute
-  '/dashboard/admin/services': typeof DashboardAdminServicesRoute
   '/dashboard/admin/settings': typeof DashboardAdminSettingsRoute
   '/dashboard/admin/users': typeof DashboardAdminUsersRoute
   '/dashboard/admin/': typeof DashboardAdminIndexRoute
@@ -264,7 +255,6 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/admin/orders'
     | '/dashboard/admin/production'
-    | '/dashboard/admin/services'
     | '/dashboard/admin/settings'
     | '/dashboard/admin/users'
     | '/dashboard/admin/'
@@ -289,7 +279,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/admin/orders'
     | '/dashboard/admin/production'
-    | '/dashboard/admin/services'
     | '/dashboard/admin/settings'
     | '/dashboard/admin/users'
     | '/dashboard/admin'
@@ -316,7 +305,6 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/admin/orders'
     | '/dashboard/admin/production'
-    | '/dashboard/admin/services'
     | '/dashboard/admin/settings'
     | '/dashboard/admin/users'
     | '/dashboard/admin/'
@@ -465,13 +453,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAdminSettingsRouteImport
       parentRoute: typeof DashboardAdminRoute
     }
-    '/dashboard/admin/services': {
-      id: '/dashboard/admin/services'
-      path: '/services'
-      fullPath: '/dashboard/admin/services'
-      preLoaderRoute: typeof DashboardAdminServicesRouteImport
-      parentRoute: typeof DashboardAdminRoute
-    }
     '/dashboard/admin/production': {
       id: '/dashboard/admin/production'
       path: '/production'
@@ -520,7 +501,6 @@ declare module '@tanstack/react-router' {
 interface DashboardAdminRouteChildren {
   DashboardAdminOrdersRoute: typeof DashboardAdminOrdersRoute
   DashboardAdminProductionRoute: typeof DashboardAdminProductionRoute
-  DashboardAdminServicesRoute: typeof DashboardAdminServicesRoute
   DashboardAdminSettingsRoute: typeof DashboardAdminSettingsRoute
   DashboardAdminUsersRoute: typeof DashboardAdminUsersRoute
   DashboardAdminIndexRoute: typeof DashboardAdminIndexRoute
@@ -529,7 +509,6 @@ interface DashboardAdminRouteChildren {
 const DashboardAdminRouteChildren: DashboardAdminRouteChildren = {
   DashboardAdminOrdersRoute: DashboardAdminOrdersRoute,
   DashboardAdminProductionRoute: DashboardAdminProductionRoute,
-  DashboardAdminServicesRoute: DashboardAdminServicesRoute,
   DashboardAdminSettingsRoute: DashboardAdminSettingsRoute,
   DashboardAdminUsersRoute: DashboardAdminUsersRoute,
   DashboardAdminIndexRoute: DashboardAdminIndexRoute,
@@ -584,3 +563,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
