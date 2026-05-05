@@ -9,7 +9,7 @@ export const Route = createFileRoute("/api/public/hooks/poll-orders")({
       POST: async () => {
         try {
           const result = await runProductionBot();
-          return Response.json({ ok: true, ...result });
+          return Response.json({ ...result, ok: true });
         } catch (e: any) {
           console.error("[poll-orders]", e);
           return new Response(JSON.stringify({ ok: false, error: String(e?.message ?? e) }), {
