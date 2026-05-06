@@ -72,15 +72,17 @@ export const adminSetRole = createServerFn({ method: "POST" })
   });
 
 // ---------- ORDERS / PROFIT ----------
-export const adminListOrders = createServerFn({ method: "GET" })
+export const adminListOrders = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ refreshKey: z.number().optional() }).optional().parse(d))
   .handler(async ({ context }) => {
     await assertAdmin(context.userId);
-    const { data } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("orders")
       .select("id,user_id,service_id,link,quantity,charge,status,created_at,error")
       .order("id", { ascending: false })
       .limit(300);
+    if (error) throw new Error(error.message);
     return data ?? [];
   });
 
